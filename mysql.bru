@@ -1,0 +1,43 @@
+meta {
+  name: echo-bru
+  type: http
+  seq: 3
+}
+
+post {
+  url: https://echo.usebruno.com
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name":"usebruno"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+script:pre-request {
+  const mysql = require("mysql2/promise");
+  
+  async function testMySql() {
+    try {
+      const connection = await mysql.createConnection({
+        host: "localhost",       // or your remote host
+        user: "root",
+        password: "password",
+        database: "testdb",
+  });
+      const [rows] = await connection.query("SELECT NOW() AS current_time");
+      console.log("✅ Connected successfully!");
+      console.log("Current DB time:", rows[0].current_time);
+      await connection.end();
+    } catch (err) {
+      console.error("❌ MySQL connection failed:", err.message);
+    }}
+  await testMySql();
+  
+}

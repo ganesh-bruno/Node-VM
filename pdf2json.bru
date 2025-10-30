@@ -1,0 +1,78 @@
+meta {
+  name: pdf2json
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf
+  body: none
+  auth: inherit
+}
+
+script:pre-request {
+  const https = require('node:https');
+  const PDFParser = require('pdf2json');
+  const url = require('node:url');
+  
+  const PDF_URL = 'https://ontheline.trincoll.edu/images/bookdown/sample-local-pdf.pdf';
+  
+  const parsedUrl = url.parse(PDF_URL);
+  const options = {
+    hostname: parsedUrl.hostname,
+    port: parsedUrl.port || 443,
+    path: parsedUrl.pathname,
+    method: 'GET'
+  };
+  
+  console.log(options);
+  
+  const chunks = [];
+  
+  const request = https.request(options, (response) => {
+    response.on('data', (chunk) => {
+      chunks.push(chunk);
+    });
+  
+    response.on('end', async () => {
+      const buffer = Buffer.concat(chunks);
+      console.log(buffer.length);
+      
+      // Create PDFParser instance
+      const pdfParser = new PDFParser();
+      
+      // Set up event handlers
+      pdfParser.on('pdfParser_dataError', errData => {
+        console.error('PDF parsing error:', errData.parserError);
+      });
+      
+      pdfParser.on('pdfParser_dataReady', pdfData => {
+        console.log('PDF parsed successfully');
+        // Access text content with: pdfParser.getRawTextContent()
+      });
+      
+      // Parse the buffer - you'll need to write it to a temp file first
+      // or use an alternative approach
+      const fs = require('fs');
+      const tempFile = './temp.pdf';
+      fs.writeFileSync(tempFile, buffer);
+      pdfParser.loadPDF(tempFile);
+      
+      // Clean up temp file after parsing
+      setTimeout(() => {
+        fs.unlinkSync(tempFile);
+      }, 1000);
+    });
+  });
+  
+  request.on('error', (error) => {
+    console.error('Request error:', error);
+  });
+  
+  request.end();
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
