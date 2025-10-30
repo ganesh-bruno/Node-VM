@@ -2,6 +2,10 @@
 
 This Bruno collection demonstrates the new **Node VM** feature, which allows you to run Node.js libraries (like `mysql2` and `pdf2json`) directly inside Bruno scripts.
 
+Clone this repo with `git clone` or simply click on the **Fetch in Bruno** button below to open this collection in Bruno:
+
+[<img src="https://fetch.usebruno.com/button.svg" alt="Fetch in Bruno" style="width: 130px; height: 30px;" width="128" height="32">](https://fetch.usebruno.com?url=https%3A%2F%2Fgithub.com%2Fganesh-bruno%2FNode-VM.git "target=_blank rel=noopener noreferrer")
+
 ## 🎯 What's New?
 
 Previously, Bruno used a VM sandbox that had limited support for JavaScript library packages. Now with **Node VM** (Node.js built-in), you can use powerful libraries that were not available before!
