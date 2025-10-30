@@ -45,6 +45,7 @@ Parse PDF files and extract JSON data.
    npm install
    ```
 3. Update connection credentials in the `.bru` files for `mysql2`
+4. Switch to `Developer Mode` in Burno
 4. Run your scripts!
 
 ## 📝 Important Notes
